@@ -59,7 +59,6 @@ void setup() {
   psClient.setServer(host, port);
   psClient.setCallback(callback);
 }
-
 void callback(char* topic, byte* payload, unsigned int leng) {
   Serial.print("Received[");
   Serial.print(topic);
@@ -68,11 +67,9 @@ void callback(char* topic, byte* payload, unsigned int leng) {
     txt[i] = (char)payload[i];
   }
   txt[leng] = '\0';
-  
   Serial.println(txt);
   StaticJsonDocument<48> jsonDocument;
   deserializeJson(jsonDocument, txt);
-  // nén một cấu trúc dữ liệu thành Json Document
   String requestLed = jsonDocument["led"]["state"]["onOff"];
   if (requestLed == "true") {
     digitalWrite(ledPin, HIGH);
@@ -128,18 +125,13 @@ void loop() {
       return;
     }
     StaticJsonDocument<300> jsonDocument;
-    // Khai báo các json object
     JsonObject root = jsonDocument.to<JsonObject>();
-
     JsonObject temp_sensor = root.createNestedObject("temp");
     temp_sensor["temp"] = temp;
-    
     JsonObject humid_sensor = root.createNestedObject("humid");
     humid_sensor["humid"] = humd;
-
     JsonObject light_sensor = root.createNestedObject("light");
     light_sensor["light"] = light;
-
     JsonObject mois_sensor = root.createNestedObject("mois");
     mois_sensor["mois"] = mois;
     serializeJson(jsonDocument, msg);
